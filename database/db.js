@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const url = 'mongodb://localhost:27017/node-api';
+const url = process.env.DBURL || 'mongodb://localhost:27017/node-api';
 mongoose.connect(url, {
   useNewUrlParser: true,
   useCreateIndex: true,

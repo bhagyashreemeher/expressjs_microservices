@@ -5,10 +5,10 @@ const { Schema } = mongoose;
 
 const orderSchema = new Schema({
   productId: {
-    type: mongoose.Types.ObjectId, required: [true, 'Please enter a valid id'], ref: dbModel.Product,
+    type: Schema.Types.ObjectId, required: [true, 'Please enter a valid id'], ref: dbModel.Product,
   },
   price: { type: Number, required: [true, 'Please enter a valid price '] },
-  profileId: { type: mongoose.Types.ObjectId, required: [true, 'Please enter a valid profileid'], ref: dbModel.Profile },
+  profileId: { type: Schema.Types.ObjectId, required: [true, 'Please enter a valid profileid'], ref: dbModel.Profile },
 }, { timestamps: true });
 
 function validateOrders(next) {

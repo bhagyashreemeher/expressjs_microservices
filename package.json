@@ -6,8 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server",
-    "start": "node server",
-    "lint": "eslint ./"
+    "start": "node dist/api.bundle.js",
+    "lint": "eslint ./",
+    "build": "webpack"
   },
   "author": "bhagyashree meher",
   "license": "ISC",
@@ -22,6 +23,8 @@
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-node": "^11.1.0",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
   }
 }

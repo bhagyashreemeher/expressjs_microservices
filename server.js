@@ -1,5 +1,5 @@
 const express = require('express');
-const mongoose = require('./database/db');
+
 const app = express();
 const articlesRoutes = require('./routes/articles');
 const profilesRoutes = require('./routes/profiles');
@@ -16,5 +16,5 @@ app.use('/api/products', productsRoutes);
 app.use('/api/orders', ordersRoutes);
 
 app.listen(port, () => {
-    console.log('listening to server ' + port);
+  console.log(`listening to server ${port}`);
 });

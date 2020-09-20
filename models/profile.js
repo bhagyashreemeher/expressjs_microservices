@@ -18,11 +18,8 @@ const profileSchema = new Schema({
   },
   email: {
     type: String,
-    required: true,
-    validate: {
-      validator: (v) => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v),
-      message: 'Please enter a valid email',
-    },
+    required: [true, 'Please enter a valid email'],
+    match: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
   },
 }, { timestamps: true });
 

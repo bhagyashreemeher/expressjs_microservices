@@ -19,5 +19,30 @@ Install the dependencies and devDependencies and start the server.
 ```sh
 $ cd expressjs_microservices
 $ npm install
+```
+To setup mongodb database in local:
+
+Add LOCALDBURL env variable
+
+```sh
+$ export LOCALDBURL="mongodb://localhost:27017/node-api"
+```
+
+To run locally:
+
+```sh
 $ npm run dev
+```
+
+To generate build and start the server:
+
+```sh
+$ npm run build
+$ npm run start
+```
+
+To check the code quality using eslint:
+
+```sh
+$ npm run lint
 ```

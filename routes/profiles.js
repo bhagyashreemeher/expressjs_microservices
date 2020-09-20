@@ -60,21 +60,21 @@ router.put('/:id', (req, res) => {
     email: req.body.email,
     age: req.body.age,
   };
+
   if (!mongoose.Types.ObjectId.isValid(req.params.id) || !req.params.id || req.params.id === '') {
     res.status(400).json({ error: `The user with article id ${req.params.id} not found` });
-    return;
+  } else {
+    Profile.findByIdAndUpdate(req.params.id, profile,
+      { new: true, runValidators: true }, (err, doc) => {
+        if (!err) {
+          if (!doc) {
+            res.status(404).json({ error: `The user with article id ${req.params.id} not found` });
+          } else {
+            res.status(200).json({ data: doc, errors: null, code: 200 });
+          }
+        } else res.status(400).json({ data: null, errors: err.message, code: 200 });
+      });
   }
-
-  Profile.findByIdAndUpdate(req.params.id, profile,
-    { new: true, runValidators: true }, (err, doc) => {
-      if (!err) {
-        if (!doc) {
-          res.status(404).json({ error: `The user with article id ${req.params.id} not found` });
-        } else {
-          res.status(200).json({ data: doc, errors: null, code: 200 });
-        }
-      } else res.status(400).json({ data: null, errors: err.message, code: 200 });
-    });
 });
 
 module.exports = router;

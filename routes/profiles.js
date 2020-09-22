@@ -1,13 +1,12 @@
 const router = require('express').Router();
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const Profile = require('../models/profile');
 const mongoose = require('../database/db');
 
 router.post('/signup', (req, res) => {
-
   bcrypt.hash(req.body.password, 10, (err, hash) => {
     if (err) {
-      res.status(400).json({data: null, errors: 'Profile validation failed: password: Path `password` is required.', code: 400});
+      res.status(400).json({ data: null, errors: 'Profile validation failed: password: Path `password` is required.', code: 400 });
     } else {
       const profile = new Profile({
         name: req.body.name,
@@ -19,9 +18,9 @@ router.post('/signup', (req, res) => {
       });
       profile.save((error, result) => {
         if (error) {
-          res.status(400).json({data: null, errors: error.message, code: 400});
+          res.status(400).json({ data: null, errors: error.message, code: 400 });
         } else {
-          res.status(201).json({data: result, errors: null, code: 200});
+          res.status(201).json({ data: result, errors: null, code: 200 });
         }
       });
     }

@@ -19,6 +19,7 @@ const profileSchema = new Schema({
   email: {
     type: String,
     required: [true, 'Please enter a valid email'],
+    index: true,
     match: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
   },
   password: {

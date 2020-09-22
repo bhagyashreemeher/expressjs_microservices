@@ -4,7 +4,7 @@ const Profile = require('../models/profile');
 const mongoose = require('../database/db');
 
 router.post('/signup', (req, res) => {
-  bcrypt.hash(req.body.password, 10, (err, hash) => {
+  bcrypt.hash(req.body.password, 10, async (err, hash) => {
     if (err) {
       res.status(400).json({ data: null, errors: 'Profile validation failed: password: Path `password` is required.', code: 400 });
     } else {
@@ -16,13 +16,33 @@ router.post('/signup', (req, res) => {
         email: req.body.email,
         password: hash,
       });
-      profile.save((error, result) => {
-        if (error) {
-          res.status(400).json({ data: null, errors: error.message, code: 400 });
-        } else {
-          res.status(201).json({ data: result, errors: null, code: 200 });
-        }
-      });
+
+      try {
+        const result = await profile.save();
+        res.status(201).json({ data: result, errors: null, code: 201 });
+      } catch (error) {
+        res.status(400).json({
+          data: null,
+          errors: error.message.includes('duplicate')
+            ? `Duplicate email exists '${req.body.email}'` : error.message,
+          code: 400,
+        });
+      }
+    }
+  });
+});
+
+router.post('/signin', (req, res) => {
+  Profile.findOne({ email: req.body.email }, async (error, result) => {
+    if (!result || error) {
+      res.status(400).json({ data: null, errors: 'Incorrect email or password', code: 400 });
+    } else {
+      const isValid = await bcrypt.compare(req.body.password, result.password);
+      if (isValid) {
+        res.status(200).json({ data: isValid, errors: null, code: 200 });
+      } else {
+        res.status(400).json({ data: null, errors: 'Incorrect email or password', code: 400 });
+      }
     }
   });
 });

@@ -21,6 +21,10 @@ const profileSchema = new Schema({
     required: [true, 'Please enter a valid email'],
     match: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
   },
+  password: {
+    type: String,
+    required: [true, 'please enter a valid password'],
+  },
 }, { timestamps: true });
 
 const Profile = mongoose.model(dbModel.Profile, profileSchema);

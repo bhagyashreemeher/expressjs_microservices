@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Profile = require('../models/profile');
 const mongoose = require('../database/db');
+const authenticate = require('../middleware/auth');
 
 const { jwtKey } = process.env;
 
@@ -58,7 +59,7 @@ router.post('/signin', (req, res) => {
   });
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', authenticate, (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id) || !req.params.id || req.params.id === '') {
     res.status(400).json({ error: `The user with profile id ${req.params.id} not found` });
     return;
@@ -75,7 +76,7 @@ router.get('/:id', (req, res) => {
   });
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', authenticate, (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id) || !req.params.id || req.params.id === '') {
     res.status(400).json({ error: `The user with article id ${req.params.id} not found` });
     return;
@@ -92,7 +93,7 @@ router.delete('/:id', (req, res) => {
   });
 });
 
-router.get('/', (req, res) => {
+router.get('/', authenticate, (req, res) => {
   Profile.find({}, (err, doc) => {
     if (!err) {
       res.status(200).json({ data: doc, errors: null, code: 200 });
@@ -100,7 +101,7 @@ router.get('/', (req, res) => {
   });
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', authenticate, (req, res) => {
   const profile = {
     name: req.body.name,
     country: req.body.country,

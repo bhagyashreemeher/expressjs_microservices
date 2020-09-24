@@ -1,7 +1,10 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const Profile = require('../models/profile');
 const mongoose = require('../database/db');
+
+const { jwtKey } = process.env;
 
 router.post('/signup', (req, res) => {
   bcrypt.hash(req.body.password, 10, async (err, hash) => {
@@ -39,7 +42,15 @@ router.post('/signin', (req, res) => {
     } else {
       const isValid = await bcrypt.compare(req.body.password, result.password);
       if (isValid) {
-        res.status(200).json({ data: isValid, errors: null, code: 200 });
+        const jtoken = jwt.sign({
+          email: req.body.email,
+        }, jwtKey,
+        {
+          expiresIn: '1h',
+        });
+        res.status(200).json({
+          data: isValid, errors: null, code: 200, jtoken,
+        });
       } else {
         res.status(400).json({ data: null, errors: 'Incorrect email or password', code: 400 });
       }

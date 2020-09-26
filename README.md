@@ -29,8 +29,6 @@ $ export LOCALDBURL="mongodb://localhost:27017/node-api"
 ```
 
 To run locally:
-
-
 ```sh
 $ npm run dev
 ```

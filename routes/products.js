@@ -1,8 +1,9 @@
 const router = require('express').Router();
 const Product = require('../models/product');
 const mongoose = require('../database/db');
+const authenticate = require('../middleware/auth');
 
-router.post('/', (req, res) => {
+router.post('/', authenticate, (req, res) => {
   Product.insertMany(req.body, (err, doc) => {
     if (!err) {
       res.status(200).json({ data: doc, errors: null, code: 200 });
@@ -12,7 +13,7 @@ router.post('/', (req, res) => {
   });
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', authenticate, (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id) || !req.params.id || req.params.id === '') {
     res.status(400).json({ error: `The user with product id ${req.params.id} not found` });
     return;
@@ -29,7 +30,7 @@ router.get('/:id', (req, res) => {
   });
 });
 
-router.get('/', (req, res) => {
+router.get('/', authenticate, (req, res) => {
   Product.find({}, (err, doc) => {
     if (!err) {
       res.status(200).json({ data: doc, errors: null, code: 200 });
@@ -39,7 +40,7 @@ router.get('/', (req, res) => {
   });
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', authenticate, (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id) || !req.params.id || req.params.id === '') {
     res.status(400).json({ error: `The user with product id ${req.params.id} not found` });
     return;
@@ -56,7 +57,7 @@ router.delete('/:id', (req, res) => {
   });
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', authenticate, (req, res) => {
   const product = {
     name: req.body.name,
     price: req.body.price,

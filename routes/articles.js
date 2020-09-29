@@ -9,12 +9,14 @@ const Article = require('../models/article');
  *    get:
  *      description: This should create articles
  */
-router.post('/', (req, res) => {
-  Article.insertMany(req.body, (err, doc) => {
-    if (!err) {
-      res.status(200).json({ data: doc, errors: null, code: 200 });
-    } else res.status(400).json({ data: null, errors: err.message, code: 400 });
-  });
+router.post('/', async (req, res) => {
+  try {
+    const result = await Article.insertMany(req.body);
+    res.status(200).json({ data: result, errors: null, code: 200 });
+  } catch (err) {
+    res.status(400).json({ data: null, errors: err.message, code: 400 });
+  }
+
 });
 
 /**
@@ -23,21 +25,22 @@ router.post('/', (req, res) => {
  *    get:
  *      description: This should return all articles by id
  */
-router.get('/:id', (req, res) => {
-  if (!mongoose.Types.ObjectId.isValid(req.params.id) || !req.params.id || req.params.id === '') {
+router.get('/:id', async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id.trim()) || !req.params.id.trim() || req.params.id === '') {
     res.status(400).json({ error: `The user with article id ${req.params.id} not found` });
     return;
   }
 
-  Article.findById(req.params.id, (err, doc) => {
-    if (!err) {
-      if (!doc) {
-        res.status(404).json({ error: `The user with article id ${req.params.id} not found` });
-      } else {
-        res.status(200).json({ data: doc, errors: null, code: 200 });
-      }
-    } else res.status(500).json({ data: null, errors: err.message, code: 500 });
-  });
+  try {
+    const r = await Article.findById(req.params.id.trim());
+    if (!r) {
+      res.status(404).json({ error: `The user with article id ${req.params.id} not found` });
+    } else {
+      res.status(200).json({ data: r, errors: null, code: 200 });
+    }
+  } catch (error) {
+    res.status(500).json({ data: null, errors: error.message, code: 500 });
+  }
 });
 
 /**
@@ -46,21 +49,26 @@ router.get('/:id', (req, res) => {
  *    get:
  *      description: This should return all articles by profileId
  */
-router.get('/user/:id', (req, res) => {
-  if (!mongoose.Types.ObjectId.isValid(req.params.id) || !req.params.id || req.params.id === '') {
+router.get('/user/:id', async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id.trim()) || !req.params.id.trim() || req.params.id === '') {
     res.status(400).json({ error: `The user with article id ${req.params.id} not found` });
     return;
   }
 
-  Article.find({ profileId: req.params.id }, (err, doc) => {
-    if (!err) {
-      if (!doc) {
-        res.status(404).json({ error: `The user with article id ${req.params.id} not found` });
-      } else {
-        res.status(200).json({ data: doc, errors: null, code: 200 });
-      }
-    } else res.status(500).json({ data: null, errors: err, code: 400 });
-  });
+  try {
+
+    const result = await Article.find({ profileId: req.params.id.trim() });
+
+    if (result && result.length > 0) {
+      res.status(200).json({ data: result, errors: null, code: 200 });
+    }
+    else {
+      res.status(404).json({ error: `The user with article id ${req.params.id} not found` });
+    }
+
+  } catch (error) {
+    res.status(500).json({ data: null, errors: error.message, code: 400 });
+  }
 });
 
 /**
@@ -69,12 +77,15 @@ router.get('/user/:id', (req, res) => {
  *    post:
  *      description: This should return all articles
  */
-router.get('/', (req, res) => {
-  Article.find({}, (err, doc) => {
-    if (!err) {
-      res.status(200).json({ data: doc, errors: null, code: 200 });
-    } else res.status(400).json({ data: null, errors: err, code: 400 });
-  });
+router.get('/', async (req, res) => {
+  try {
+    const result = await Article.find({});
+    res.status(200).json({ data: result, errors: null, code: 200 });
+
+  } catch (error) {
+    res.status(400).json({ data: null, errors: error, code: 400 });
+
+  }
 });
 
 /**

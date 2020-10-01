@@ -28,16 +28,16 @@ router.post('/', async (req, res) => {
  */
 router.get('/:id', async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id.trim()) || !req.params.id.trim() || req.params.id === '') {
-    res.status(httpStatus.BAD_REQUEST).json({ error: `The user with article id ${req.params.id} not found` });
+    res.status(httpStatus.BAD_REQUEST).json({ error: `The article id ${req.params.id} is not found` });
     return;
   }
 
   try {
-    const r = await Article.findById(req.params.id.trim());
-    if (!r) {
-      res.status(404).json({ error: `The user with article id ${req.params.id} not found` });
+    const result = await Article.findById(req.params.id.trim());
+    if (result) {
+      res.status(httpStatus.OK).json({ data: result, errors: null, code: httpStatus.OK });
     } else {
-      res.status(httpStatus.OK).json({ data: r, errors: null, code: httpStatus.OK });
+      res.status(httpStatus.NOT_FOUND).json({ data: null, error: `The article id ${req.params.id} is not found`, code: httpStatus.NOT_FOUND });
     }
   } catch (error) {
     res.status(httpStatus.INTERNAL_SERVER_ERROR).json(
@@ -48,13 +48,13 @@ router.get('/:id', async (req, res) => {
 
 /**
  * @swagger
- * /articles/user/:id:
+ * /articles/profile/:id:
  *    get:
  *      description: This should return all articles by profileId
  */
-router.get('/user/:id', async (req, res) => {
+router.get('/profile/:id', async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id.trim()) || !req.params.id.trim() || req.params.id === '') {
-    res.status(httpStatus.BAD_REQUEST).json({ error: `The user with article id ${req.params.id} not found` });
+    res.status(httpStatus.BAD_REQUEST).json({ error: `The article with profile id ${req.params.id} is not found` });
     return;
   }
 
@@ -63,7 +63,7 @@ router.get('/user/:id', async (req, res) => {
     if (result && result.length > 0) {
       res.status(httpStatus.OK).json({ data: result, errors: null, code: httpStatus.OK });
     } else {
-      res.status(httpStatus.NOT_FOUND).json({ error: `The user with article id ${req.params.id} not found` });
+      res.status(httpStatus.NOT_FOUND).json({ error: `The article with profile id ${req.params.id} is not found` });
     }
   } catch (error) {
     res.status(httpStatus.INTERNAL_SERVER_ERROR).json(
@@ -97,13 +97,13 @@ router.get('/', async (req, res) => {
  */
 router.delete('/:id', async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id.trim()) || !req.params.id.trim() || req.params.id === '') {
-    res.status(httpStatus.BAD_REQUEST).json({ error: `The user with article id ${req.params.id} not found` });
+    res.status(httpStatus.BAD_REQUEST).json({ error: `The article id ${req.params.id} is not found` });
     return;
   }
   try {
     const result = await Article.findByIdAndDelete(req.params.id.trim());
     if (!result) {
-      res.status(httpStatus.NOT_FOUND).json({ error: `The user with article id ${req.params.id} not found` });
+      res.status(httpStatus.NOT_FOUND).json({ error: `The article id ${req.params.id} is not found` });
     } else {
       res.status(httpStatus.OK).json({ data: result, errors: null, code: httpStatus.OK });
     }
@@ -127,14 +127,14 @@ router.put('/:id', async (req, res) => {
     profileId: req.body.profileId,
   };
   if (!mongoose.Types.ObjectId.isValid(req.params.id.trim()) || !req.params.id.trim() || req.params.id === '') {
-    res.status(httpStatus.BAD_REQUEST).json({ error: `The user with article id ${req.params.id} not found` });
+    res.status(httpStatus.BAD_REQUEST).json({ error: `The article id ${req.params.id} is not found` });
     return;
   }
   try {
     const result = await Article.findByIdAndUpdate(req.params.id.trim(), article,
       { new: true, runValidators: true });
     if (!result) {
-      res.status(httpStatus.NOT_FOUND).json({ error: `The user with article id ${req.params.id} not found` });
+      res.status(httpStatus.NOT_FOUND).json({ error: `The article id ${req.params.id} is not found` });
     } else {
       res.status(httpStatus.OK).json({ data: result, errors: null, code: httpStatus.OK });
     }

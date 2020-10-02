@@ -2,6 +2,7 @@ const httpStatus = require('http-status-codes').StatusCodes;
 const router = require('express').Router();
 const mongoose = require('../database/db');
 const Article = require('../models/article');
+const authenticate = require('../middleware/auth');
 
 /**
  * @swagger
@@ -9,7 +10,7 @@ const Article = require('../models/article');
  *    get:
  *      description: This should create articles
  */
-router.post('/', async (req, res) => {
+router.post('/', authenticate, async (req, res) => {
   try {
     const result = await Article.insertMany(req.body);
     res.status(httpStatus.OK).json({ data: result, errors: null, code: httpStatus.OK });
@@ -26,7 +27,7 @@ router.post('/', async (req, res) => {
  *    get:
  *      description: This should return all articles by id
  */
-router.get('/:id', async (req, res) => {
+router.get('/:id', authenticate, async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id.trim()) || !req.params.id.trim() || req.params.id === '') {
     res.status(httpStatus.BAD_REQUEST).json({ error: `The article id ${req.params.id} is not found` });
     return;
@@ -52,7 +53,7 @@ router.get('/:id', async (req, res) => {
  *    get:
  *      description: This should return all articles by profileId
  */
-router.get('/profile/:id', async (req, res) => {
+router.get('/profile/:id', authenticate, async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id.trim()) || !req.params.id.trim() || req.params.id === '') {
     res.status(httpStatus.BAD_REQUEST).json({ error: `The article with profile id ${req.params.id} is not found` });
     return;
@@ -78,7 +79,7 @@ router.get('/profile/:id', async (req, res) => {
  *    post:
  *      description: This should return all articles
  */
-router.get('/', async (req, res) => {
+router.get('/', authenticate, async (req, res) => {
   try {
     const result = await Article.find({});
     res.status(httpStatus.OK).json({ data: result, errors: null, code: httpStatus.OK });
@@ -95,7 +96,7 @@ router.get('/', async (req, res) => {
  *    delete:
  *      description: This should delete articles by id
  */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticate, async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id.trim()) || !req.params.id.trim() || req.params.id === '') {
     res.status(httpStatus.BAD_REQUEST).json({ error: `The article id ${req.params.id} is not found` });
     return;
@@ -120,7 +121,7 @@ router.delete('/:id', async (req, res) => {
  *    put:
  *      description: This should update all articles by id
  */
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticate, async (req, res) => {
   const article = {
     name: req.body.name,
     description: req.body.description,

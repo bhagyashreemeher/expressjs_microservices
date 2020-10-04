@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 const dbModel = require('./index');
 
 const { Schema } = mongoose;
@@ -27,6 +28,13 @@ const profileSchema = new Schema({
     required: [true, 'please enter a valid password'],
   },
 }, { timestamps: true });
+
+profileSchema.pre('save', async function preSave(next) {
+  const profile = this;
+  const hash = await bcrypt.hash(this.password, 10);
+  profile.password = hash;
+  next();
+});
 
 const Profile = mongoose.model(dbModel.Profile, profileSchema);
 

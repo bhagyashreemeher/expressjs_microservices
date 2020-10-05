@@ -30,10 +30,18 @@ const profileSchema = new Schema({
 }, { timestamps: true });
 
 profileSchema.pre('save', async function preSave(next) {
-  const profile = this;
-  const hash = await bcrypt.hash(this.password, 10);
-  profile.password = hash;
-  next();
+  try {
+    const profile = this;
+    const hash = await bcrypt.hash(this.password, 10);
+    profile.password = hash;
+    next();
+  } catch (error) {
+    next({
+      data: null,
+      errors: 'Profile validation failed: password: Path `password` is required.',
+      code: 400,
+    });
+  }
 });
 
 const Profile = mongoose.model(dbModel.Profile, profileSchema);

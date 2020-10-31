@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const httpStatus = require('http-status-codes').StatusCodes;
 const Profile = require('../models/profile');
 const mongoose = require('../database/db');
 const authenticate = require('../middleware/auth');
@@ -8,35 +9,6 @@ const authenticate = require('../middleware/auth');
 const { jwtKey } = process.env;
 
 router.post('/signup', async (req, res) => {
-  // bcrypt.hash(req.body.password, 10, async (err, hash) => {
-  //   if (err) {
-  //     res.status(400).json(
-  // { data: null, errors: 'Profile validation failed: password: Path `password` is required.'
-  // , code: 400 }
-  // );
-  //   } else {
-  //     const profile = new Profile({
-  //       name: req.body.name,
-  //       country: req.body.country,
-  //       age: req.body.age,
-  //       sex: req.body.sex,
-  //       email: req.body.email,
-  //       password: req.body.password,
-  //     });
-
-  //     try {
-  //       const result = await profile.save();
-  //       res.status(201).json({ data: result, errors: null, code: 201 });
-  //     } catch (error) {
-  //       res.status(400).json({
-  //         data: null,
-  //         errors: error.message.includes('duplicate')
-  //           ? `Duplicate email exists '${req.body.email}'` : error.message,
-  //         code: 400,
-  //       });
-  //     }
-  //   }
-  // });
   const profile = new Profile({
     name: req.body.name,
     country: req.body.country,
@@ -50,11 +22,11 @@ router.post('/signup', async (req, res) => {
     const result = await profile.save();
     res.status(201).json({ data: result, errors: null, code: 201 });
   } catch (error) {
-    res.status(400).json({
+    res.status(httpStatus.CONFLICT).json({
       data: null,
       errors: error.message.includes('duplicate')
         ? `Duplicate email exists '${req.body.email}'` : error.message,
-      code: 400,
+      code: httpStatus.CONFLICT,
     });
   }
 });

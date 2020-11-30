@@ -38,8 +38,8 @@ router.post("/signin", (req, res) => {
   Profile.findOne({ email: req.body.email }, async (error, result) => {
     if (!result || error) {
       res
-        .status(400)
-        .json({ data: null, errors: "Incorrect email or password", code: 400 });
+        .status(httpStatus.BAD_REQUEST)
+        .json({ data: null, errors: "Incorrect email or password", code: httpStatus.BAD_REQUEST });
     } else {
       const isValid = await bcrypt.compare(req.body.password, result.password);
       if (isValid) {
@@ -60,11 +60,11 @@ router.post("/signin", (req, res) => {
         });
       } else {
         res
-          .status(400)
+          .status(httpStatus.BAD_REQUEST)
           .json({
             data: null,
             errors: "Incorrect email or password",
-            code: 400,
+            code: httpStatus.BAD_REQUEST,
           });
       }
     }

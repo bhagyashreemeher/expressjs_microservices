@@ -39,7 +39,11 @@ router.post("/signin", (req, res) => {
     if (!result || error) {
       res
         .status(httpStatus.BAD_REQUEST)
-        .json({ data: null, errors: "Incorrect email or password", code: httpStatus.BAD_REQUEST });
+        .json({
+          data: null,
+          errors: "Incorrect email or password",
+          code: httpStatus.BAD_REQUEST,
+        });
     } else {
       const isValid = await bcrypt.compare(req.body.password, result.password);
       if (isValid) {
@@ -52,20 +56,18 @@ router.post("/signin", (req, res) => {
             expiresIn: "1h",
           }
         );
-        res.status(200).json({
+        res.status(httpStatus.OK).json({
           data: isValid,
           errors: null,
-          code: 200,
+          code: httpStatus.OK,
           jtoken,
         });
       } else {
-        res
-          .status(httpStatus.BAD_REQUEST)
-          .json({
-            data: null,
-            errors: "Incorrect email or password",
-            code: httpStatus.BAD_REQUEST,
-          });
+        res.status(httpStatus.BAD_REQUEST).json({
+          data: null,
+          errors: "Incorrect email or password",
+          code: httpStatus.BAD_REQUEST,
+        });
       }
     }
   });
@@ -86,15 +88,13 @@ router.get("/:id", authenticate, (req, res) => {
   Profile.findById(req.params.id, (err, doc) => {
     if (!err) {
       if (!doc) {
-        res
-          .status(404)
-          .json({
-            error: `The user with article id ${req.params.id} not found`,
-          });
+        res.status(httpStatus.NOT_FOUND).json({
+          error: `The user with article id ${req.params.id} not found`,
+        });
       } else {
-        res.status(200).json({ data: doc, errors: null, code: 200 });
+        res.status(httpStatus.OK).json({ data: doc, errors: null, code: httpStatus.OK });
       }
-    } else res.status(400).json({ data: null, errors: err.message, code: 400 });
+    } else res.status(httpStatus.BAD_REQUEST).json({ data: null, errors: err.message, code: httpStatus.BAD_REQUEST });
   });
 });
 
@@ -113,23 +113,21 @@ router.delete("/:id", authenticate, (req, res) => {
   Profile.findByIdAndDelete(req.params.id, (err, doc) => {
     if (!err) {
       if (!doc) {
-        res
-          .status(404)
-          .json({
-            error: `The user with article id ${req.params.id} not found`,
-          });
+        res.status(httpStatus.NOT_FOUND).json({
+          error: `The user with article id ${req.params.id} not found`,
+        });
       } else {
-        res.status(200).json({ data: doc, errors: null, code: 200 });
+        res.status(httpStatus.OK).json({ data: doc, errors: null, code: httpStatus.OK });
       }
-    } else res.status(400).json({ data: null, errors: err.message, code: 400 });
+    } else res.status(httpStatus.BAD_REQUEST).json({ data: null, errors: err.message, code: httpStatus.BAD_REQUEST });
   });
 });
 
 router.get("/", authenticate, (req, res) => {
   Profile.find({}, (err, doc) => {
     if (!err) {
-      res.status(200).json({ data: doc, errors: null, code: 200 });
-    } else res.status(400).json({ data: null, errors: err, code: 400 });
+      res.status(httpStatus.OK).json({ data: doc, errors: null, code: httpStatus.OK });
+    } else res.status(httpStatus.BAD_REQUEST).json({ data: null, errors: err, code: httpStatus.BAD_REQUEST });
   });
 });
 
@@ -148,7 +146,7 @@ router.put("/:id", authenticate, (req, res) => {
     req.params.id === ""
   ) {
     res
-      .status(400)
+      .status(httpStatus.BAD_REQUEST)
       .json({ error: `The user with article id ${req.params.id} not found` });
   } else {
     Profile.findByIdAndUpdate(
@@ -158,16 +156,14 @@ router.put("/:id", authenticate, (req, res) => {
       (err, doc) => {
         if (!err) {
           if (!doc) {
-            res
-              .status(404)
-              .json({
-                error: `The user with article id ${req.params.id} not found`,
-              });
+            res.status(httpStatus.NOT_FOUND).json({
+              error: `The user with article id ${req.params.id} not found`,
+            });
           } else {
-            res.status(200).json({ data: doc, errors: null, code: 200 });
+            res.status(httpStatus.OK).json({ data: doc, errors: null, code: httpStatus.OK });
           }
         } else
-          res.status(400).json({ data: null, errors: err.message, code: 200 });
+          res.status(httpStatus.BAD_REQUEST).json({ data: null, errors: err.message, code: httpStatus.OK });
       }
     );
   }

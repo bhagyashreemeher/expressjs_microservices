@@ -2,13 +2,14 @@ const router = require('express').Router();
 const Product = require('../models/product');
 const mongoose = require('../database/db');
 const authenticate = require('../middleware/auth');
+const httpStatus = require("http-status-codes").StatusCodes;
 
 router.post('/', authenticate, (req, res) => {
   Product.insertMany(req.body, (err, doc) => {
     if (!err) {
-      res.status(200).json({ data: doc, errors: null, code: 200 });
+      res.status(httpStatus.OK).json({ data: doc, errors: null, code: httpStatus.OK });
     } else {
-      res.status(400).json({ data: null, errors: err.message, code: 400 });
+      res.status(httpStatus.BAD_REQUEST).json({ data: null, errors: err.message, code: httpStatus.BAD_REQUEST });
     }
   });
 });

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const dbModel = require('./index');
+const httpStatus = require("http-status-codes").StatusCodes;
 
 const { Schema } = mongoose;
 const profileSchema = new Schema({
@@ -40,7 +41,7 @@ profileSchema.pre('save', async function preSave(next) {
     next({
       data: null,
       errors: 'Profile validation failed: password: Path `password` is required.',
-      code: 400,
+      code: httpStatus.BAD_REQUEST,
     });
   }
 });

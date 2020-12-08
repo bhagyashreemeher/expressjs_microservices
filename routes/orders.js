@@ -27,7 +27,7 @@ router.post('/', authenticate, (req, res) => {
 
 router.get('/:id', authenticate, (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id) || !req.params.id || req.params.id === '') {
-    res.status(400).json({ error: `The user with order id ${req.params.id} not found` });
+    res.status(httpStatus.BAD_REQUEST).json({ error: `The user with order id ${req.params.id} not found` });
     return;
   }
 

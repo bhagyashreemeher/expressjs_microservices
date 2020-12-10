@@ -80,7 +80,7 @@ router.get("/:id", authenticate, (req, res) => {
     req.params.id === ""
   ) {
     res
-      .status(400)
+      .status(httpStatus.BAD_REQUEST)
       .json({ error: `The user with profile id ${req.params.id} not found` });
     return;
   }
@@ -105,7 +105,7 @@ router.delete("/:id", authenticate, (req, res) => {
     req.params.id === ""
   ) {
     res
-      .status(400)
+      .status(httpStatus.BAD_REQUEST)
       .json({ error: `The user with article id ${req.params.id} not found` });
     return;
   }
